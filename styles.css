@@ -109,6 +109,27 @@ section {
   padding: 5rem 8vw
 }
 
+.order-insta-wide img {
+  width: 100%;
+}
+@media (max-width: 1024px) {
+  .order-insta-wide a {
+    overflow: hidden;
+    display: block;
+  }
+  .order-insta-wide img {
+    width: auto;
+    height: 370px;
+    object-fit: cover;
+    object-position: left center;
+  }
+}
+@media (max-width: 424px) {
+  .order-insta-wide img {
+    height: 300px;
+  }
+}
+
 .grid {
   /* display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

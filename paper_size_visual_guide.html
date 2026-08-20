@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paper Size Visual Guide</title>
+<style>
+:root{--ink:#252525;--muted:#6d6a66;--paper:#fffdf8;--line:#ddd7cc;--accent:#6f5b45;--bg:#f3efe7}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:1180px;margin:auto;padding:42px 22px 70px}
+h1{font-size:clamp(34px,5vw,58px);line-height:1;margin:0 0 12px;letter-spacing:-.04em}
+h2{font-size:28px;letter-spacing:-.02em;margin:0 0 18px}
+.intro{max-width:760px;color:var(--muted);font-size:17px;margin-bottom:34px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:24px;margin:22px 0;box-shadow:0 8px 30px #00000008}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.tab,button,select{font:inherit}
+.tab,button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer}
+.tab.active{background:var(--ink);color:white;border-color:var(--ink)}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:11px 9px;border-bottom:1px solid var(--line)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+td:first-child{font-weight:650}
+.visuals {
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 24px 8px 12px;
+}
+
+.paper-card {
+  flex: 0 0 auto;
+  width: 125px;
+  min-height: 245px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.paper {
+  border: 1px solid #aaa;
+  box-shadow: 3px 5px 0 #00000012;
+  background: #fff;
+
+  /* These are now controlled by JS using ONE shared scale */
+  width: var(--w);
+  height: var(--h);
+
+  max-width: 115px;
+  max-height: 190px;
+  flex: 0 0 auto;
+}
+
+.paper-card strong {
+  font-size: 14px;
+}
+
+.paper-card small {
+  color: var(--muted);
+  white-space: nowrap;
+}
+.controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:22px}
+.field label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px}
+.field select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:white}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.compare-box{border:1px solid var(--line);border-radius:15px;padding:18px;background:#fff;min-height:300px}
+.stage{height:220px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.shape{border:2px solid var(--accent);background:#f1eadf;position:relative;max-width:90%;max-height:90%}
+.shape span{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);font-weight:700;font-size:12px;white-space:nowrap}
+.result{font-size:20px;font-weight:700;margin-top:18px}
+.note{color:var(--muted);font-size:13px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:13px}
+.dot{display:inline-block;width:10px;height:10px;border:1px solid var(--accent);background:#f1eadf;margin-right:5px}
+@media(max-width:800px){.controls{grid-template-columns:1fr}.compare{grid-template-columns:1fr}}
+.visual-divider {
+  height: 1px;
+  background: var(--line);
+  margin: 28px 0 24px;
+}
+
+.visual-heading {
+  font-size: 20px;
+  margin: 0 0 4px;
+  letter-spacing: -.01em;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Paper Size Visual Guide</h1>
+  <p class="intro">A practical reference for ISO paper sizes, common US sizes, and the useful question: <em>how many sheets of one size can fit on another?</em></p>
+
+  <section class="panel">
+  <h2>Paper sizes at a glance</h2>
+
+  <div class="tabs">
+    <button class="tab active" data-family="A">A series</button>
+    <button class="tab" data-family="B">B series</button>
+    <button class="tab" data-family="C">C series</button>
+    <button class="tab" data-family="US">US / North America</button>
+  </div>
+
+  <div id="table"></div>
+
+  <div class="visual-divider"></div>
+
+  <h3 class="visual-heading">See the sizes</h3>
+
+  <div id="visuals" class="visuals"></div>
+
+  <p class="note">
+    The sheets are shown proportionally to one another.
+  </p>
+</section>
+
+  <section class="panel">
+    <h2>How many fit?</h2>
+    <p class="intro" style="font-size:15px;margin:0 0 18px">
+      Pick a parent sheet and a smaller sheet. The calculator checks both orientations and gives the maximum number of whole sheets that can be cut from the parent sheet.
+    </p>
+
+    <div class="controls">
+      <div class="field">
+        <label>Parent / larger sheet</label>
+        <select id="large"></select>
+      </div>
+      <div class="field">
+        <label>Smaller sheet</label>
+        <select id="small"></select>
+      </div>
+      <div class="field">
+        <label>Show dimensions in</label>
+        <select id="unit">
+          <option value="cm">Centimetres (cm)</option>
+          <option value="mm">Millimetres (mm)</option>
+          <option value="in">Inches (in)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-box">
+        <strong id="largeTitle"></strong>
+        <div class="stage"><div id="largeShape" class="shape"><span></span></div></div>
+        <div id="largeDim" class="note"></div>
+      </div>
+      <div class="compare-box">
+        <strong id="smallTitle"></strong>
+        <div class="stage"><div id="smallShape" class="shape"><span></span></div></div>
+        <div id="smallDim" class="note"></div>
+      </div>
+    </div>
+
+    <div class="result" id="result"></div>
+    <div class="legend">
+      <span><i class="dot"></i>sheet</span>
+      <span>Does not account for cutting margins, bleed, gutters, printer margins, or blade kerf.</span>
+    </div>
+  </section>
+</div>
+
+<script>
+const mmToIn = mm => mm / 25.4;
+const fmt = n => Number(n.toFixed(2));
+
+const A = {
+  A0:[841,1189], A1:[594,841], A2:[420,594], A3:[297,420],
+  A4:[210,297], A5:[148,210], A6:[105,148], A7:[74,105],
+  A8:[52,74], A9:[37,52], A10:[26,37]
+};
+
+const B = {
+  B0:[1000,1414], B1:[707,1000], B2:[500,707], B3:[353,500],
+  B4:[250,353], B5:[176,250], B6:[125,176], B7:[88,125],
+  B8:[62,88], B9:[44,62], B10:[31,44]
+};
+
+const C = {
+  C0:[917,1297], C1:[648,917], C2:[458,648], C3:[324,458],
+  C4:[229,324], C5:[162,229], C6:[114,162], C7:[81,114],
+  C8:[57,81], C9:[40,57], C10:[28,40]
+};
+
+const US = {
+  Letter:[216,279],
+  Legal:[216,356],
+  Tabloid:[279,432],
+  Ledger:[432,279],
+  Executive:[184,267],
+  Statement:[140,216],
+  HalfLetter:[140,216]
+};
+
+const all = {...A,...B,...C,...US};
+
+function label(k){
+  return k === 'HalfLetter' ? 'Half Letter' : k;
+}
+
+function display(mm,u){
+  if(u==='mm') return `${fmt(mm[0])} × ${fmt(mm[1])} mm`;
+  if(u==='in') return `${fmt(mmToIn(mm[0]))} × ${fmt(mmToIn(mm[1]))} in`;
+  return `${fmt(mm[0]/10)} × ${fmt(mm[1]/10)} cm`;
+}
+
+function renderFamily(f){
+  const data = {A,B,C,US}[f];
+  const keys = Object.keys(data);
+
+  // One shared scale for the entire family.
+  // The largest sheet determines the scale, so all other
+  // sheets remain proportionally smaller.
+  const maxDimension = Math.max(
+    ...keys.flatMap(k => data[k])
+  );
+
+  // Adjust this number to make the whole visual group
+  // larger or smaller.
+  const scale = 190 / maxDimension;
+
+  document.querySelector('#table').innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Size</th>
+          <th>Millimetres</th>
+          <th>Centimetres</th>
+          <th>Inches</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${keys.map(k => `
+          <tr>
+            <td>${label(k)}</td>
+            <td>${display(data[k], 'mm')}</td>
+            <td>${display(data[k], 'cm')}</td>
+            <td>${display(data[k], 'in')}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+
+  document.querySelector('#visuals').innerHTML = keys.map(k => {
+    const [w, h] = data[k];
+
+    return `
+      <div class="paper-card">
+        <div
+          class="paper"
+          style="
+            --w:${w * scale}px;
+            --h:${h * scale}px;
+          "
+        ></div>
+
+        <strong>${label(k)}</strong>
+        <small>${display(data[k], 'cm')}</small>
+      </div>
+    `;
+  }).join('');
+}
+
+document.querySelectorAll('.tab').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    renderFamily(b.dataset.family);
+  };
+});
+
+const names=Object.keys(all);
+
+['large','small'].forEach(id=>{
+  document.querySelector('#'+id).innerHTML =
+    names.map(n=>`<option value="${n}">${label(n)}</option>`).join('');
+});
+
+document.querySelector('#large').value='A3';
+document.querySelector('#small').value='A4';
+
+function fit(parent,child){
+  const [W,H]=parent,[w,h]=child;
+  const normal=Math.floor(W/w)*Math.floor(H/h);
+  const rotated=Math.floor(W/h)*Math.floor(H/w);
+  return {
+    count:Math.max(normal,rotated),
+    rotated:rotated>normal
+  };
+}
+
+function update(){
+  const largeKey=document.querySelector('#large').value;
+  const smallKey=document.querySelector('#small').value;
+  const p=all[largeKey], s=all[smallKey];
+  const u=document.querySelector('#unit').value;
+  const r=fit(p,s);
+
+  document.querySelector('#largeTitle').textContent=label(largeKey);
+  document.querySelector('#smallTitle').textContent=label(smallKey);
+  document.querySelector('#largeDim').textContent=display(p,u);
+  document.querySelector('#smallDim').textContent=display(s,u);
+
+  const scale=Math.min(190/Math.max(...p),190/Math.max(...s));
+
+  document.querySelector('#largeShape').style.width=(p[0]*scale)+'px';
+  document.querySelector('#largeShape').style.height=(p[1]*scale)+'px';
+  document.querySelector('#smallShape').style.width=(s[0]*scale)+'px';
+  document.querySelector('#smallShape').style.height=(s[1]*scale)+'px';
+
+  document.querySelector('#largeShape span').textContent=display(p,u);
+  document.querySelector('#smallShape span').textContent=display(s,u);
+
+  document.querySelector('#result').textContent =
+    r.count
+      ? `${r.count} × ${label(smallKey)} fits on 1 × ${label(largeKey)}${r.rotated?' — rotation gives the best result.':'.'}`
+      : `No whole ${label(smallKey)} sheet fits inside ${label(largeKey)}.`;
+}
+
+document.querySelectorAll('#large,#small,#unit').forEach(x=>x.onchange=update);
+
+renderFamily('A');
+update();
+</script>
+</body>
+</html>

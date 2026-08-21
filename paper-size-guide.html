@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Paper Size Visual Guide</title>
+    <style>
+    :root {
+        --ink: #252525;
+        --muted: #6d6a66;
+        --paper: #fffdf8;
+        --line: #ddd7cc;
+        --accent: #6f5b45;
+        --bg: #f3efe7
+    }
+
+    * {
+        box-sizing: border-box
+    }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 15px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
+    }
+
+    .wrap {
+        max-width: 1180px;
+        margin: auto;
+        padding: 42px 22px 70px
+    }
+
+    h1 {
+        font-size: clamp(34px, 5vw, 58px);
+        line-height: 1;
+        margin: 0 0 12px;
+        letter-spacing: -.04em
+    }
+
+    h2 {
+        font-size: 28px;
+        letter-spacing: -.02em;
+        margin: 0 0 18px
+    }
+
+    .intro {
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 17px;
+        margin-bottom: 34px
+    }
+
+    .panel {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 24px;
+        margin: 22px 0;
+        box-shadow: 0 8px 30px #00000008
+    }
+
+    .tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 20px
+    }
+
+    .tab,
+    button,
+    select {
+        font: inherit
+    }
+
+    .tab,
+    button {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 10px;
+        padding: 9px 13px;
+        cursor: pointer
+    }
+
+    .tab.active {
+        background: var(--ink);
+        color: white;
+        border-color: var(--ink)
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse
+    }
+
+    th,
+    td {
+        text-align: left;
+        padding: 11px 9px;
+        border-bottom: 1px solid var(--line)
+    }
+
+    th {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: var(--muted)
+    }
+
+    td:first-child {
+        font-weight: 650
+    }
+
+    .visuals {
+        display: flex;
+        align-items: flex-end;
+        gap: 18px;
+        overflow-x: auto;
+        padding: 24px 8px 12px;
+    }
+
+    .paper-card {
+        flex: 0 0 auto;
+        width: 125px;
+        min-height: 245px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .paper {
+        border: 1px solid #aaa;
+        box-shadow: 3px 5px 0 #00000012;
+        background: #fff;
+        width: var(--w);
+        height: var(--h);
+        flex: 0 0 auto;
+    }
+
+    .paper-card strong {
+        font-size: 14px;
+    }
+
+    .paper-card small {
+        color: var(--muted);
+        white-space: nowrap;
+    }
+
+    .visual-divider {
+        height: 1px;
+        background: var(--line);
+        margin: 28px 0 24px;
+    }
+
+    .visual-heading {
+        font-size: 20px;
+        margin: 0 0 4px;
+        letter-spacing: -.01em;
+    }
+
+    /* -----------------------------
+   HOW MANY FIT
+----------------------------- */
+    .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 22px;
+    }
+
+    .field label {
+        display: block;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .07em;
+        color: var(--muted);
+        margin-bottom: 6px;
+    }
+
+    .field select {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: white;
+    }
+
+    /* Result area */
+    .fit-result {
+        margin-top: 24px;
+    }
+
+    .fit-summary {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+    }
+
+    .fit-number {
+        font-size: 32px;
+        font-weight: 750;
+        letter-spacing: -.04em;
+    }
+
+    .fit-description {
+        color: var(--muted);
+        font-size: 15px;
+    }
+
+    /* Parent sheet */
+    .fit-preview-wrapper {
+        overflow-x: auto;
+        padding: 10px 0 18px;
+    }
+
+    .fit-parent {
+        position: relative;
+        background: #fff;
+        border: 2px solid var(--accent);
+        box-shadow: 5px 7px 0 #00000012;
+        margin: 0 auto;
+        display: grid;
+        overflow: hidden;
+    }
+
+    /* Individual sheets inside parent */
+    .fit-piece {
+        position: relative;
+        background: #f1eadf;
+        border: 1px solid rgba(111, 91, 69, .55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        min-height: 0;
+    }
+
+    .fit-piece span {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent);
+        opacity: .9;
+    }
+
+    .fit-unused {
+        background:
+            repeating-linear-gradient(45deg,
+                transparent,
+                transparent 7px,
+                rgba(0, 0, 0, .035) 7px,
+                rgba(0, 0, 0, .035) 8px);
+    }
+
+    .fit-parent-label {
+        margin-top: 10px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .fit-layout {
+        font-size: 14px;
+        font-weight: 650;
+        margin-top: 8px;
+    }
+
+    .fit-note {
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 12px;
+    }
+
+    @media(max-width:800px) {
+        .controls {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .note {
+        color: var(--muted);
+        font-size: 13px
+    }
+
+    .legend {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+        font-size: 13px
+    }
+
+    .dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border: 1px solid var(--accent);
+        background: #f1eadf;
+        margin-right: 5px
+    }
+
+    @media(max-width:800px) {
+        .controls {
+            grid-template-columns: 1fr
+        }
+
+        .compare {
+            grid-template-columns: 1fr
+        }
+    }
+
+    .visual-divider {
+        height: 1px;
+        background: var(--line);
+        margin: 28px 0 24px;
+    }
+
+    .visual-heading {
+        font-size: 20px;
+        margin: 0 0 4px;
+        letter-spacing: -.01em;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <h1>Paper Size Visual Guide</h1>
+        <p class="intro">A practical reference for ISO paper sizes, common US sizes, and the useful question: <em>how many sheets of one size can fit on another?</em></p>
+        <section class="panel">
+            <h2>Paper sizes at a glance</h2>
+            <div class="tabs">
+                <button class="tab active" data-family="A">A series</button>
+                <button class="tab" data-family="B">B series</button>
+                <button class="tab" data-family="C">C series</button>
+                <button class="tab" data-family="US">US / North America</button>
+            </div>
+            <div id="table"></div>
+            <div class="visual-divider"></div>
+            <h3 class="visual-heading">See the sizes</h3>
+            <div id="visuals" class="visuals"></div>
+            <p class="note"> The sheets are shown proportionally to one another. </p>
+        </section>
+        <section class="panel">
+            <h2>How many fit?</h2>
+            <p class="intro" style="font-size:15px;margin:0 0 18px"> Choose a parent sheet and a smaller sheet to see exactly how many smaller sheets can be laid out on the parent sheet. </p>
+            <div class="controls">
+                <div class="field">
+                    <label>Parent / larger sheet</label>
+                    <select id="large"></select>
+                </div>
+                <div class="field">
+                    <label>Smaller sheet</label>
+                    <select id="small"></select>
+                </div>
+                <div class="field">
+                    <label>Show dimensions in</label>
+                    <select id="unit">
+                        <option value="cm">Centimetres (cm)</option>
+                        <option value="mm">Millimetres (mm)</option>
+                        <option value="in">Inches (in)</option>
+                    </select>
+                </div>
+            </div>
+            <div id="fitResult" class="fit-result"></div>
+        </section>
+    </div>
+    <script>
+    const mmToIn = mm => mm / 25.4;
+    const fmt = n => Number(n.toFixed(2));
+    const A = {
+        A0: [841, 1189],
+        A1: [594, 841],
+        A2: [420, 594],
+        A3: [297, 420],
+        A4: [210, 297],
+        A5: [148, 210],
+        A6: [105, 148],
+        A7: [74, 105],
+        A8: [52, 74],
+        A9: [37, 52],
+        A10: [26, 37]
+    };
+    const B = {
+        B0: [1000, 1414],
+        B1: [707, 1000],
+        B2: [500, 707],
+        B3: [353, 500],
+        B4: [250, 353],
+        B5: [176, 250],
+        B6: [125, 176],
+        B7: [88, 125],
+        B8: [62, 88],
+        B9: [44, 62],
+        B10: [31, 44]
+    };
+    const C = {
+        C0: [917, 1297],
+        C1: [648, 917],
+        C2: [458, 648],
+        C3: [324, 458],
+        C4: [229, 324],
+        C5: [162, 229],
+        C6: [114, 162],
+        C7: [81, 114],
+        C8: [57, 81],
+        C9: [40, 57],
+        C10: [28, 40]
+    };
+    const US = {
+        Letter: [216, 279],
+        Legal: [216, 356],
+        Tabloid: [279, 432],
+        Ledger: [432, 279],
+        Executive: [184, 267],
+        Statement: [140, 216],
+        HalfLetter: [140, 216]
+    };
+    const all = {
+        ...A,
+        ...B,
+        ...C,
+        ...US
+    };
+
+    function label(k) {
+        return k === 'HalfLetter' ? 'Half Letter' : k;
+    }
+
+    function display(mm, u) {
+        if(u === 'mm') return `${fmt(mm[0])} × ${fmt(mm[1])} mm`;
+        if(u === 'in') return `${fmt(mmToIn(mm[0]))} × ${fmt(mmToIn(mm[1]))} in`;
+        return `${fmt(mm[0]/10)} × ${fmt(mm[1]/10)} cm`;
+    }
+
+    function renderFamily(f) {
+        const data = {
+            A,
+            B,
+            C,
+            US
+        } [f];
+        const keys = Object.keys(data);
+        // One shared scale for the entire family.
+        // The largest sheet determines the scale, so all other
+        // sheets remain proportionally smaller.
+        const maxDimension = Math.max(...keys.flatMap(k => data[k]));
+        // Adjust this number to make the whole visual group
+        // larger or smaller.
+        const scale = 190 / maxDimension;
+        document.querySelector('#table').innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Size</th>
+          <th>Millimetres</th>
+          <th>Centimetres</th>
+          <th>Inches</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${keys.map(k => `
+          <tr>
+            <td>${label(k)}</td>
+            <td>${display(data[k], 'mm')}</td>
+            <td>${display(data[k], 'cm')}</td>
+            <td>${display(data[k], 'in')}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+        document.querySelector('#visuals').innerHTML = keys.map(k => {
+            const [w, h] = data[k];
+            return `
+      <div class="paper-card">
+        <div
+          class="paper"
+          style="
+            --w:${w * scale}px;
+            --h:${h * scale}px;
+          "
+        ></div>
+
+        <strong>${label(k)}</strong>
+        <small>${display(data[k], 'cm')}</small>
+      </div>
+    `;
+        }).join('');
+    }
+    document.querySelectorAll('.tab').forEach(b => {
+        b.onclick = () => {
+            document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+            renderFamily(b.dataset.family);
+        };
+    });
+    const names = Object.keys(all);
+    ['large', 'small'].forEach(id => {
+        document.querySelector('#' + id).innerHTML = names.map(n => `<option value="${n}">${label(n)}</option>`).join('');
+    });
+    document.querySelector('#large').value = 'A3';
+    document.querySelector('#small').value = 'A4';
+
+    function fit(parent, child) {
+        const [W, H] = parent;
+        const [w, h] = child;
+        // Normal orientation
+        const normalCols = Math.floor(W / w);
+        const normalRows = Math.floor(H / h);
+        const normalCount = normalCols * normalRows;
+        // Rotated orientation
+        const rotatedCols = Math.floor(W / h);
+        const rotatedRows = Math.floor(H / w);
+        const rotatedCount = rotatedCols * rotatedRows;
+        if(rotatedCount > normalCount) {
+            return {
+                count: rotatedCount,
+                cols: rotatedCols,
+                rows: rotatedRows,
+                rotated: true,
+                pieceW: h,
+                pieceH: w
+            };
+        }
+        return {
+            count: normalCount,
+            cols: normalCols,
+            rows: normalRows,
+            rotated: false,
+            pieceW: w,
+            pieceH: h
+        };
+    }
+
+    function update() {
+        const largeKey = document.querySelector('#large').value;
+        const smallKey = document.querySelector('#small').value;
+        const unit = document.querySelector('#unit').value;
+        const parent = all[largeKey];
+        const child = all[smallKey];
+        const result = fit(parent, child);
+        const container = document.querySelector('#fitResult');
+        if(result.count === 0) {
+            container.innerHTML = `
+      <div class="fit-summary">
+        <div class="fit-number">0</div>
+        <div class="fit-description">${label(smallKey)} sheets fit on ${label(largeKey)}.</div>
+      </div>
+      <div class="fit-note">The smaller sheet is larger than the parent sheet in both orientations.</div>`;
+            return;
+        }
+        const scale = Math.min(620 / parent[0], 420 / parent[1]);
+        const parentWidth = parent[0] * scale;
+        const parentHeight = parent[1] * scale;
+        const pieceWidth = result.pieceW * scale;
+        const pieceHeight = result.pieceH * scale;
+        let pieces = '';
+        for(let i = 0; i < result.count; i++) {
+            pieces += `<div class="fit-piece"><span>${i + 1}</span></div>`;
+        }
+        const usedWidth = result.cols * result.pieceW;
+        const usedHeight = result.rows * result.pieceH;
+        const unusedWidth = parent[0] - usedWidth;
+        const unusedHeight = parent[1] - usedHeight;
+        const layoutHTML = `
+    <div class="fit-parent"
+      style="
+        width:${parentWidth}px;
+        height:${parentHeight}px;
+        grid-template-columns:repeat(${result.cols}, ${pieceWidth}px);
+        grid-template-rows:repeat(${result.rows}, ${pieceHeight}px);
+      ">
+      ${pieces}
+    </div>`;
+        container.innerHTML = `
+    <div class="fit-summary">
+      <div class="fit-number">${result.count}</div>
+      <div class="fit-description">× ${label(smallKey)} fits on 1 × ${label(largeKey)}</div>
+    </div>
+    <div class="fit-preview-wrapper">
+      ${layoutHTML}
+      <div class="fit-parent-label">${label(largeKey)} — ${display(parent, unit)}</div>
+      <div class="fit-layout">
+        ${result.cols} × ${result.rows} layout
+        ${result.rotated ? ' · smaller sheet rotated' : ''}
+      </div>
+    </div>
+    <div class="fit-note">
+      Each ${label(smallKey)}: ${display(child, unit)}
+      · Parent: ${display(parent, unit)}
+      ${unusedWidth > 0 || unusedHeight > 0 ? ' · Some paper remains unused.' : ' · The sheet is filled exactly.'}
+      <br><br>
+      This is a theoretical sheet layout and does not include printer margins, bleed, cutting margins, gutters or blade kerf.
+    </div>`;
+    }
+    document.querySelectorAll('#large,#small,#unit').forEach(x => x.addEventListener('change', update));
+    renderFamily('A');
+    update();
+    </script>
+</body>
+
+</html>

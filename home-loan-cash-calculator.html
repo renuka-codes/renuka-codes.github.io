@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karnataka Home Loan: Cash-in-Hand Calculator</title>
+<style>
+:root{
+  --bg:#eef2f6; --card:#ffffff; --ink:#16213a; --muted:#5b6780; --line:#d6dde8;
+  --accent:#0b7a75; --accent-soft:#dff2f0; --warn:#9a5b00; --warn-bg:#fff3dc;
+  --c1:#0b7a75; --c2:#3b5bdb; --c3:#e08a00; --c4:#8a4fd1; --c5:#8892a6;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0f1626; --card:#18213a; --ink:#e8edf7; --muted:#9aa7c2; --line:#2b3757;
+  --accent:#3fcfc6; --accent-soft:#143a3d; --warn:#ffcf85; --warn-bg:#3a2d12;
+  --c1:#3fcfc6; --c2:#7f97ff; --c3:#ffb23f; --c4:#b88cf2; --c5:#8f9ab3;}
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  padding:env(safe-area-inset-top,0px) 16px env(safe-area-inset-bottom,0px)}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 0 40px}
+h1{font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.2;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 22px;max-width:62ch}
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.card h2{font-size:1.05rem;margin:0 0 14px}
+fieldset{border:0;padding:0;margin:0 0 20px}
+fieldset:last-of-type{margin-bottom:0}
+legend{font-weight:650;font-size:.95rem;padding:0;margin-bottom:10px;color:var(--accent)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+label{display:block;font-size:.88rem;font-weight:550;margin-bottom:10px}
+label small{display:block;font-weight:400;color:var(--muted);font-size:.78rem;margin-top:3px;line-height:1.35}
+.in{display:flex;align-items:center;border:1px solid var(--line);border-radius:9px;background:var(--bg);margin-top:5px;overflow:hidden}
+.in:focus-within{outline:2px solid var(--accent);outline-offset:1px}
+.in span{padding:0 10px;color:var(--muted);font-size:.9rem;white-space:nowrap}
+input,select{font:inherit;color:var(--ink);background:transparent;border:0;padding:9px 10px;width:100%;min-width:0;outline:none}
+select{border:1px solid var(--line);border-radius:9px;background:var(--bg);margin-top:5px;cursor:pointer}
+select:focus{outline:2px solid var(--accent);outline-offset:1px}
+select option{background:var(--card);color:var(--ink)}
+.hint{font-size:.8rem;color:var(--muted);margin:-4px 0 12px}
+.hint button{all:unset;color:var(--accent);cursor:pointer;text-decoration:underline}
+.hint button:focus-visible{outline:2px solid var(--accent)}
+.result{position:sticky;top:16px}
+@media(max-width:820px){.result{position:static}}
+.big{background:var(--accent-soft);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.big .lbl{font-size:.88rem;color:var(--muted)}
+.big .amt{font-size:clamp(1.9rem,5vw,2.6rem);font-weight:750;letter-spacing:-.02em;line-height:1.15;color:var(--accent)}
+.big .meta{font-size:.88rem;color:var(--muted)}
+.bar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--line);margin:0 0 6px}
+.bar i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.78rem;color:var(--muted);margin-bottom:14px}
+.legend b{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+td{padding:7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.grp td{font-weight:650;padding-top:14px;border-bottom:2px solid var(--line)}
+tr.sub td{color:var(--muted);font-size:.85rem;padding-left:12px}
+tr.tot td{font-weight:750;border-bottom:0;font-size:1rem;padding-top:12px}
+.loan{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.loan div{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.loan small{color:var(--muted);display:block;font-size:.78rem}
+.loan strong{font-size:1.05rem}
+.warn{background:var(--warn-bg);color:var(--warn);border-radius:9px;padding:9px 12px;font-size:.85rem;margin-top:12px;display:none}
+.disc{margin-top:20px;font-size:.84rem;color:var(--muted)}
+.disc strong{color:var(--ink)}
+.disc ul{margin:8px 0 0;padding-left:20px}
+.reset{margin-top:14px;background:none;border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:8px 14px;font:inherit;font-size:.88rem;cursor:pointer}
+.reset:hover{border-color:var(--accent)}
+.reset:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Home loan cash-in-hand calculator (Karnataka)</h1>
+  <p class="sub">See how much cash you need to arrange on your own: the down payment the bank won’t fund, plus stamp duty, registration, brokerage and other upfront costs. Every value is editable.</p>
+
+  <div class="grid">
+    <form class="card" onsubmit="return false" autocomplete="off">
+      <fieldset>
+        <legend>Property and loan</legend>
+        <div class="row">
+          <label>Property price
+            <div class="in"><span>₹</span><input id="price" type="number" min="0" step="10000" value="5000000" inputmode="numeric"></div>
+            <small id="priceWords"></small>
+          </label>
+          <label>Loan-to-value (bank funds)
+            <div class="in"><input id="ltv" type="number" min="0" max="100" step="1" value="80" inputmode="decimal"><span>%</span></div>
+            <small>Banks usually fund 75–80%; the rest is your down payment.</small>
+          </label>
+        </div>
+        <p class="hint" id="ltvHint"></p>
+        <div class="row">
+          <label>Loan interest rate
+            <div class="in"><input id="rate" type="number" min="0" step="0.05" value="7.5" inputmode="decimal"><span>% p.a.</span></div>
+          </label>
+          <label>Loan tenure
+            <div class="in"><input id="tenure" type="number" min="1" max="40" step="1" value="20" inputmode="numeric"><span>years</span></div>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Government charges</legend>
+        <label>Stamp duty rate
+          <select id="duty">
+            <option value="5" selected>5%: resale, plots, or value above ₹45 lakh</option>
+            <option value="3">3%: first registration of a flat, ₹20–45 lakh</option>
+            <option value="2">2%: first registration of a flat, up to ₹20 lakh</option>
+          </select>
+          <small>The 2% and 3% rates apply only to qualifying first registrations of flats. Check your case on Kaveri.</small>
+        </label>
+        <div class="row">
+          <label>Cess on stamp duty
+            <div class="in"><input id="cess" type="number" min="0" step="0.5" value="10" inputmode="decimal"><span>% of duty</span></div>
+          </label>
+          <label>Urban surcharge on duty
+            <div class="in"><input id="sur" type="number" min="0" step="0.5" value="2" inputmode="decimal"><span>% of duty</span></div>
+            <small>Applies in Bengaluru urban areas. Set 0 if it doesn’t apply to you.</small>
+          </label>
+        </div>
+        <div class="row">
+          <label>Registration fee
+            <div class="in"><input id="reg" type="number" min="0" step="0.5" value="2" inputmode="decimal"><span>% of value</span></div>
+            <small>Raised from 1% to 2% from 31 Aug 2025.</small>
+          </label>
+          <label>Guidance value (optional)
+            <div class="in"><span>₹</span><input id="gv" type="number" min="0" step="10000" placeholder="Leave blank" inputmode="numeric"></div>
+            <small>Duty is charged on the higher of price and guidance value.</small>
+          </label>
+        </div>
+        <label>GST on the property
+          <select id="gst">
+            <option value="0" selected>0%: ready-to-move / resale with occupancy certificate</option>
+            <option value="1">1%: under-construction, affordable housing</option>
+            <option value="5">5%: under-construction, other</option>
+          </select>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Broker, bank and other costs</legend>
+        <div class="row">
+          <label>Broker charge
+            <div class="in"><input id="broker" type="number" min="0" step="0.25" value="1" inputmode="decimal"><span>% of price</span></div>
+          </label>
+          <label>Bank processing fee
+            <div class="in"><input id="proc" type="number" min="0" step="0.1" value="0.5" inputmode="decimal"><span>% of loan</span></div>
+            <small>18% GST is added on this fee.</small>
+          </label>
+        </div>
+        <div class="row">
+          <label>Mortgage deed (MODT) charges
+            <div class="in"><input id="modt" type="number" min="0" step="0.1" value="0.5" inputmode="decimal"><span>% of loan</span></div>
+            <small>Estimate. Confirm with your bank.</small>
+          </label>
+          <label>Legal and valuation fees
+            <div class="in"><span>₹</span><input id="legal" type="number" min="0" step="1000" value="15000" inputmode="numeric"></div>
+            <small>Estimate. Title check, technical valuation.</small>
+          </label>
+        </div>
+        <div class="row">
+          <label>Maintenance, corpus and deposits
+            <div class="in"><span>₹</span><input id="maint" type="number" min="0" step="1000" value="0" inputmode="numeric"></div>
+            <small>Society corpus fund, advance maintenance, BESCOM and water deposits.</small>
+          </label>
+          <label>Khata, agreement and miscellaneous
+            <div class="in"><span>₹</span><input id="misc" type="number" min="0" step="1000" value="25000" inputmode="numeric"></div>
+            <small>Estimate. Khata transfer, documentation, loan insurance.</small>
+          </label>
+        </div>
+      </fieldset>
+      <button type="button" class="reset" id="reset">Reset to defaults</button>
+    </form>
+
+    <section class="card result" aria-live="polite">
+      <h2>Cash you need in hand</h2>
+      <div class="big">
+        <div class="lbl">Total upfront cash</div>
+        <div class="amt" id="total">₹0</div>
+        <div class="meta" id="totalMeta"></div>
+      </div>
+      <div class="bar" id="bar" role="img" aria-label="Share of each cost in total cash"></div>
+      <div class="legend" id="legend"></div>
+      <table id="tbl"></table>
+      <div class="loan">
+        <div><small>Bank loan amount</small><strong id="loanAmt">₹0</strong></div>
+        <div><small>Monthly EMI</small><strong id="emi">₹0</strong></div>
+      </div>
+      <div class="warn" id="warn"></div>
+    </section>
+  </div>
+
+  <div class="disc">
+    <strong>Disclaimer.</strong> This calculator is for properties in Karnataka only and gives an estimate, not a quote.
+    <ul>
+      <li>Rates reflect Karnataka stamp duty and registration rules as understood in 2026 and may change. Confirm the exact amounts for your property on the Kaveri portal (kaveri.karnataka.gov.in) or with a sub-registrar office.</li>
+      <li>There can be other charges not covered here, such as bank-specific fees, prepayment or conversion charges, builder-specific charges, and taxes that apply to your situation.</li>
+      <li>Interiors, furniture, appliances, moving costs and other home-buyer spending are extra and are not included.</li>
+      <li>Banks decide the final loan amount based on your eligibility and their valuation. Loan-to-value limits are set by RBI and bank policy.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var defaults={};
+  var ids=["price","ltv","rate","tenure","duty","cess","sur","reg","gv","gst","broker","proc","modt","legal","maint","misc"];
+  ids.forEach(function(i){defaults[i]=$(i).value});
+
+  var inr=new Intl.NumberFormat("en-IN",{maximumFractionDigits:0});
+  function money(n){return "₹"+inr.format(Math.round(n))}
+  function short(n){
+    if(n>=1e7) return "₹"+(n/1e7).toFixed(2).replace(/\.?0+$/,"")+" crore";
+    if(n>=1e5) return "₹"+(n/1e5).toFixed(2).replace(/\.?0+$/,"")+" lakh";
+    return money(n);
+  }
+  function num(id){var v=parseFloat($(id).value);return isFinite(v)&&v>0?v:0}
+  function rbiCap(p){return p<=3000000?90:(p<=7500000?80:75)}
+
+  function calc(){
+    var price=num("price"), ltv=Math.min(num("ltv"),100);
+    var rate=num("rate"), years=num("tenure");
+    var loan=price*ltv/100, down=price-loan;
+
+    var base=Math.max(price,num("gv"));
+    var duty=base*num("duty")/100;
+    var cess=duty*num("cess")/100;
+    var sur=duty*num("sur")/100;
+    var reg=base*num("reg")/100;
+    var gov=duty+cess+sur+reg;
+    var gst=price*num("gst")/100;
+
+    var broker=price*num("broker")/100;
+    var proc=loan*num("proc")/100, procGst=proc*0.18;
+    var modt=loan*num("modt")/100;
+    var legal=num("legal");
+    var bank=proc+procGst+modt+legal;
+    var other=num("maint")+num("misc");
+
+    var total=down+gov+gst+broker+bank+other;
+
+    var n=years*12, r=rate/1200, emi=0;
+    if(loan>0&&n>0) emi=r>0?loan*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1):loan/n;
+
+    $("priceWords").textContent=price?short(price):"";
+    var cap=rbiCap(price);
+    $("ltvHint").innerHTML="RBI’s maximum loan-to-value for this price is "+cap+"%. <button type=\"button\" id=\"useCap\">Use "+cap+"%</button>";
+    $("useCap").onclick=function(){$("ltv").value=cap;calc()};
+
+    $("total").textContent=money(total);
+    $("totalMeta").textContent=price?("That is "+(total/price*100).toFixed(1)+"% of the property price, about "+short(total)):"";
+    $("loanAmt").textContent=money(loan);
+    $("emi").textContent=money(emi);
+
+    var parts=[
+      ["Down payment",down,"var(--c1)"],
+      ["Stamp duty and registration",gov,"var(--c2)"],
+      ["Broker",broker,"var(--c3)"],
+      ["Bank and legal",bank,"var(--c4)"],
+      ["GST and other",gst+other,"var(--c5)"]
+    ];
+    $("bar").innerHTML=parts.map(function(p){
+      return "<i style=\"width:"+(total?p[1]/total*100:0)+"%;background:"+p[2]+"\" title=\""+p[0]+"\"></i>";
+    }).join("");
+    $("legend").innerHTML=parts.map(function(p){
+      return "<span><b style=\"background:"+p[2]+"\"></b>"+p[0]+"</span>";
+    }).join("");
+
+    var h="";
+    function row(c,l,v,cls){h+="<tr"+(cls?" class=\""+cls+"\"":"")+"><td>"+l+"</td><td>"+money(v)+"</td></tr>"}
+    row(0,"Down payment ("+(100-ltv).toFixed(0)+"% of price)",down);
+    row(0,"Government charges",gov,"grp");
+    row(0,"Stamp duty ("+num("duty")+"%)",duty,"sub");
+    row(0,"Cess",cess,"sub");
+    row(0,"Urban surcharge",sur,"sub");
+    row(0,"Registration fee ("+num("reg")+"%)",reg,"sub");
+    if(gst) row(0,"GST on property ("+num("gst")+"%)",gst);
+    row(0,"Broker charge",broker);
+    row(0,"Bank and legal",bank,"grp");
+    row(0,"Processing fee incl. GST",proc+procGst,"sub");
+    row(0,"Mortgage deed (MODT)",modt,"sub");
+    row(0,"Legal and valuation",legal,"sub");
+    if(other) row(0,"Maintenance, deposits and misc.",other);
+    row(0,"Total cash in hand",total,"tot");
+    $("tbl").innerHTML=h;
+
+    var msgs=[];
+    if(ltv>cap) msgs.push("A "+ltv+"% loan is above RBI’s "+cap+"% limit for this price, so the bank is unlikely to approve it. Your down payment may need to be larger.");
+    if(num("gv")>price) msgs.push("Stamp duty and registration are being calculated on the guidance value, which is higher than your price.");
+    var w=$("warn");w.style.display=msgs.length?"block":"none";w.textContent=msgs.join(" ");
+  }
+
+  ids.forEach(function(i){
+    $(i).addEventListener("input",calc);
+    $(i).addEventListener("change",calc);
+  });
+  $("reset").addEventListener("click",function(){
+    ids.forEach(function(i){$(i).value=defaults[i]});calc();
+  });
+  calc();
+})();
+</script>
+</body>
+</html>
